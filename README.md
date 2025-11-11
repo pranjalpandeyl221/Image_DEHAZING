@@ -24,49 +24,7 @@ It is trained and evaluated on the **SOTS (RESIDE)** dataset and outputs clean, 
 ✅ Modular architecture (ViT + Mamba + CNN fusion)  
 ✅ Lightweight — runs smoothly on mid-range GPUs  
 
----
 
-## 🧩 Architecture Diagram
-
-### 🔹 Line Diagram (Model Flow)
-
-Input (Hazy Image)
-│
-▼
-┌────────────────────┐
-│ CNN Encoder (3→128)│
-└────────────────────┘
-│
-▼
-┌────────────────────┐
-│ Vision Transformer │
-│ (Global Context) │
-└────────────────────┘
-│
-▼
-┌────────────────────┐
-│ Mamba (GRU Block) │
-│ (Sequential Refinement) │
-└────────────────────┘
-│
-▼
-┌────────────────────┐
-│ Projection + Fusion│
-│ (Add to Encoder) │
-└────────────────────┘
-│
-▼
-┌────────────────────┐
-│ CNN Decoder (128→3)│
-└────────────────────┘
-│
-▼
-Output (Dehazed Image)
-
-yaml
-Copy code
-
----
 
 ## 🧠 Model Components
 
@@ -88,8 +46,7 @@ Copy code
 ├── hazy_processed/ # input hazy images
 ├── GT/ # corresponding clear ground truth images
 
-yaml
-Copy code
+
 
 ---
 
@@ -101,7 +58,7 @@ cd Mamba-ViT-Dehazing
 pip install torch torchvision scikit-learn matplotlib Pillow
 🧪 Training
 bash
-Copy code
+
 python train_dehazing.py
 Automatically splits data into 80% Train / 20% Test
 
@@ -134,7 +91,7 @@ Test Set — Avg PSNR: 35.42, Avg SSIM: 0.9287
 You can visualize the model flow using Matplotlib:
 
 python
-Copy code
+
 import matplotlib.pyplot as plt
 
 stages = [
@@ -162,7 +119,7 @@ plt.show()
 After training, the model weights are saved as:
 
 python
-Copy code
+
 torch.save(model.state_dict(), "mamba_vit_100dddehazing.pth")
 🧍‍♂️ Author
 Pranjal Pandey
@@ -174,7 +131,7 @@ Indian Institute of Information Technology, Bhagalpur
 If you use this repository or build upon it, please cite:
 
 bibtex
-Copy code
+
 @software{pranjal2025mambavitdehazing,
   title  = {Mamba-ViT Hybrid Image Dehazing},
   author = {Pandey, Pranjal},
