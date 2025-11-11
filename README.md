@@ -1,118 +1,140 @@
-🧠 README: Mamba-ViT Hybrid Image Dehazing
-🌫 Overview
+# 🧠 Mamba-ViT Hybrid Image Dehazing
 
-This repository implements a hybrid deep learning model for image dehazing that integrates a Vision Transformer (ViT) encoder and a Mamba recurrent refinement module.
+## 🌫 Overview
+
+This repository implements a **hybrid deep learning model** for **image dehazing** that integrates a **Vision Transformer (ViT)** encoder and a **Mamba recurrent refinement module**.
+
 The model enhances feature understanding and spatial consistency by combining:
 
-Local texture extraction (CNN Encoder)
+- 🧩 **Local texture extraction** — CNN Encoder  
+- 🌍 **Global context modeling** — Vision Transformer  
+- 🔁 **Sequential feature refinement** — Mamba GRU  
+- 🎨 **Image reconstruction** — CNN Decoder  
 
-Global context modeling (ViT)
+It is trained and evaluated on the **SOTS (RESIDE)** dataset and outputs clean, dehazed images with **high PSNR and SSIM**.
 
-Sequential feature refinement (Mamba GRU)
+---
 
-Image reconstruction (CNN Decoder)
+## 🚀 Features
 
-It is trained and evaluated on the SOTS (RESIDE) dataset and outputs clean, dehazed images with high PSNR and SSIM.
+✅ DEM-Free, purely image-based model  
+✅ End-to-end training with PyTorch  
+✅ Supports PSNR & SSIM metric evaluation  
+✅ Visual comparison (Hazy → Dehazed → Ground Truth)  
+✅ Modular architecture (ViT + Mamba + CNN fusion)  
+✅ Lightweight — runs smoothly on mid-range GPUs  
 
-🚀 Features
+---
 
-✅ DEM-Free, purely image-based model
-✅ End-to-end training with PyTorch
-✅ Supports PSNR & SSIM metric evaluation
-✅ Visual comparison (Hazy → Dehazed → Ground Truth)
-✅ Modular architecture (ViT + Mamba + CNN fusion)
-✅ Lightweight, easy to train on mid-range GPUs
+## 🧩 Architecture Diagram
 
-🧩 Architecture Diagram
-Line Diagram (Model Flow)
+### 🔹 Line Diagram (Model Flow)
+
 Input (Hazy Image)
-        │
-        ▼
- ┌────────────────────┐
- │  CNN Encoder (3→128)│
- └────────────────────┘
-        │
-        ▼
- ┌────────────────────┐
- │  Vision Transformer │
- │ (Global Context)    │
- └────────────────────┘
-        │
-        ▼
- ┌────────────────────┐
- │  Mamba (GRU Block)  │
- │ (Sequential Refinement) │
- └────────────────────┘
-        │
-        ▼
- ┌────────────────────┐
- │  Projection + Fusion│
- │ (Add to Encoder)    │
- └────────────────────┘
-        │
-        ▼
- ┌────────────────────┐
- │  CNN Decoder (128→3)│
- └────────────────────┘
-        │
-        ▼
+│
+▼
+┌────────────────────┐
+│ CNN Encoder (3→128)│
+└────────────────────┘
+│
+▼
+┌────────────────────┐
+│ Vision Transformer │
+│ (Global Context) │
+└────────────────────┘
+│
+▼
+┌────────────────────┐
+│ Mamba (GRU Block) │
+│ (Sequential Refinement) │
+└────────────────────┘
+│
+▼
+┌────────────────────┐
+│ Projection + Fusion│
+│ (Add to Encoder) │
+└────────────────────┘
+│
+▼
+┌────────────────────┐
+│ CNN Decoder (128→3)│
+└────────────────────┘
+│
+▼
 Output (Dehazed Image)
 
-🧠 Model Components
-Component	Description
-Encoder	Two-layer CNN for local feature extraction
-SimpleViT	Lightweight Vision Transformer-like feature summarizer
-SimpleMamba	GRU-based sequential block to refine ViT embeddings
-Decoder	CNN block to reconstruct the clean image
-Fusion	Adds back the refined global context to spatial encoder features
-📂 Dataset
+yaml
+Copy code
 
-Dataset Used: RESIDE SOTS Outdoor
+---
 
-Folder Structure:
+## 🧠 Model Components
 
-├── hazy_processed/   # input hazy images
-├── GT/               # corresponding clear ground truth images
+| Component | Description |
+|------------|-------------|
+| **Encoder** | Two-layer CNN for local feature extraction |
+| **SimpleViT** | Lightweight Vision Transformer for global context summarization |
+| **SimpleMamba** | GRU-based sequential block to refine ViT embeddings |
+| **Decoder** | CNN block for reconstructing the clean image |
+| **Fusion** | Adds refined global features back to encoder outputs |
 
-⚙️ Installation
+---
+
+## 📂 Dataset
+
+**Dataset Used:** [RESIDE SOTS Outdoor](https://sites.google.com/view/reside-dehaze-datasets)
+
+### Folder Structure
+├── hazy_processed/ # input hazy images
+├── GT/ # corresponding clear ground truth images
+
+yaml
+Copy code
+
+---
+
+## ⚙️ Installation
+
+```bash
 git clone https://github.com/<your-username>/Mamba-ViT-Dehazing.git
 cd Mamba-ViT-Dehazing
 pip install torch torchvision scikit-learn matplotlib Pillow
-
 🧪 Training
+bash
+Copy code
 python train_dehazing.py
-
-
-The model automatically splits data into 80% train / 20% test
+Automatically splits data into 80% Train / 20% Test
 
 Trains for 70 epochs
 
-Saves model weights as mamba_vit_100dddehazing.pth
+Saves model as:
 
+bash
+Copy code
+mamba_vit_100dddehazing.pth
 📈 Evaluation Metrics
 Metric	Description
-PSNR	Peak Signal-to-Noise Ratio for reconstruction quality
-SSIM	Structural Similarity Index for perceptual similarity
+PSNR	Peak Signal-to-Noise Ratio – measures reconstruction fidelity
+SSIM	Structural Similarity Index – evaluates perceptual similarity
 
 Both metrics are computed per image and averaged across the dataset.
 
 🖼 Results Visualization
+During testing, side-by-side comparisons are displayed as:
 
-During testing, the script displays side-by-side comparisons:
-
-Hazy Input | Predicted Output | Ground Truth
-
+Hazy Input → Predicted Output → Ground Truth
 
 Example Output:
 
+yaml
+Copy code
 Epoch 70, Loss: 0.0084, PSNR: 34.82, SSIM: 0.9231
+Test Set — Avg PSNR: 35.42, Avg SSIM: 0.9287
+📊 Example Visualization (Optional)
+You can visualize the model flow using Matplotlib:
 
-Test Set - Average PSNR: 35.42, Average SSIM: 0.9287
-
-📊 Example Visualization (Python)
-
-You can generate a diagram showing the model flow using Matplotlib:
-
+python
+Copy code
 import matplotlib.pyplot as plt
 
 stages = [
@@ -127,34 +149,35 @@ stages = [
 
 plt.figure(figsize=(12, 2))
 for i, stage in enumerate(stages):
-    plt.text(i * 1.5, 0, stage, fontsize=11, bbox=dict(facecolor='skyblue', edgecolor='black', boxstyle='round,pad=0.3'))
+    plt.text(i * 1.5, 0, stage, fontsize=11,
+             bbox=dict(facecolor='skyblue', edgecolor='black', boxstyle='round,pad=0.3'))
     if i < len(stages) - 1:
-        plt.arrow(i * 1.5 + 0.9, 0, 0.5, 0, head_width=0.05, head_length=0.1, fc='k', ec='k')
+        plt.arrow(i * 1.5 + 0.9, 0, 0.5, 0,
+                  head_width=0.05, head_length=0.1, fc='k', ec='k')
 
 plt.axis('off')
 plt.title("Mamba-ViT Hybrid Dehazing Pipeline", fontsize=13, pad=10)
 plt.show()
-
 💾 Model Saving
+After training, the model weights are saved as:
 
-After training:
-
+python
+Copy code
 torch.save(model.state_dict(), "mamba_vit_100dddehazing.pth")
-
 🧍‍♂️ Author
-
 Pranjal Pandey
-B.Tech, Mechatronics and Automation
+B.Tech — Mechatronics and Automation
 Indian Institute of Information Technology, Bhagalpur
 📧 pranjal.230103027@iiitbh.ac.in
 
 🧾 Citation
+If you use this repository or build upon it, please cite:
 
-If you use this work or build upon it, please cite:
-
+bibtex
+Copy code
 @software{pranjal2025mambavitdehazing,
-  title={Mamba-ViT Hybrid Image Dehazing},
-  author={Pandey, Pranjal},
-  year={2025},
-  url={https://github.com/<your-username>/Mamba-ViT-Dehazing}
+  title  = {Mamba-ViT Hybrid Image Dehazing},
+  author = {Pandey, Pranjal},
+  year   = {2025},
+  url    = {https://github.com/<your-username>/Mamba-ViT-Dehazing}
 }
